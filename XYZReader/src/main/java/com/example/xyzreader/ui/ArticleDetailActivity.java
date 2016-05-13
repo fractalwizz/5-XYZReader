@@ -5,13 +5,17 @@ import android.app.Fragment;
 import android.app.FragmentManager;
 import android.app.LoaderManager;
 import android.content.Loader;
+import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Build;
 import android.os.Bundle;
+import android.preference.Preference;
+import android.preference.PreferenceManager;
 import android.support.v13.app.FragmentStatePagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.ActionBarActivity;
+import android.util.Log;
 import android.util.TypedValue;
 import android.view.View;
 import android.view.ViewGroup;
@@ -27,10 +31,12 @@ import com.example.xyzreader.data.ItemsContract;
 public class ArticleDetailActivity extends ActionBarActivity implements LoaderManager.LoaderCallbacks<Cursor> {
     private Cursor mCursor;
     private long mStartId;
+    public static final String PREF_USER_LEARNED_SWIPE = "swipe_learned";
 
     private long mSelectedItemId;
     private int mSelectedItemUpButtonFloor = Integer.MAX_VALUE;
     private int mTopInset;
+    private int swipeYet = 1;
 
     private ViewPager mPager;
     private MyPagerAdapter mPagerAdapter;
@@ -40,6 +46,10 @@ public class ArticleDetailActivity extends ActionBarActivity implements LoaderMa
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
+        if (sp.contains(PREF_USER_LEARNED_SWIPE)) { swipeYet = 0; }
+
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             getWindow().getDecorView().setSystemUiVisibility(
                 View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN | View.SYSTEM_UI_FLAG_LAYOUT_STABLE
@@ -68,6 +78,15 @@ public class ArticleDetailActivity extends ActionBarActivity implements LoaderMa
             public void onPageSelected(int position) {
                 if (mCursor != null) { mCursor.moveToPosition(position); }
                 mSelectedItemId = mCursor.getLong(ArticleLoader.Query._ID);
+//                Log.w("Detail", "Is this swipe?:" + String.valueOf(swipeYet));
+
+                SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
+
+                if (swipeYet != 1) {
+                    sp.edit().putBoolean(PREF_USER_LEARNED_SWIPE, true).apply();
+                } else {
+                    swipeYet--;
+                }
 
                 updateUpButtonPosition();
             }

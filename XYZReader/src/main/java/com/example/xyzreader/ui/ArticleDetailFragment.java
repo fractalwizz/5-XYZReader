@@ -4,13 +4,16 @@ import android.app.Fragment;
 import android.app.LoaderManager;
 import android.content.Intent;
 import android.content.Loader;
+import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.graphics.Rect;
-import android.graphics.Typeface;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
+import android.support.design.widget.FloatingActionButton;
+import android.support.design.widget.Snackbar;
 import android.support.v4.app.ShareCompat;
 import android.support.v7.graphics.Palette;
 import android.text.Html;
@@ -44,14 +47,16 @@ public class ArticleDetailFragment extends Fragment implements LoaderManager.Loa
     private View mRootView;
     private int mMutedColor = 0xFF333333;
     private ObservableScrollView mScrollView;
-    private DrawInsetsFrameLayout mDrawInsetsFrameLayout;
+    private DrawInsetsCoordinatorLayout mDrawInsetsCoordinatorLayout;
     private ColorDrawable mStatusBarColorDrawable;
+    private FloatingActionButton mFab;
 
     private int mTopInset;
     private View mPhotoContainerView;
     private ImageView mPhotoView;
     private int mScrollY;
     private boolean mIsCard = false;
+    private boolean hasLearnedSwipe;
     private int mStatusBarFullOpacityBottom;
 
     /**
@@ -77,6 +82,9 @@ public class ArticleDetailFragment extends Fragment implements LoaderManager.Loa
         mIsCard = getResources().getBoolean(R.bool.detail_is_card);
         mStatusBarFullOpacityBottom = getResources().getDimensionPixelSize(R.dimen.detail_card_top_margin);
 
+        SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(getActivity());
+        hasLearnedSwipe = sp.getBoolean(ArticleDetailActivity.PREF_USER_LEARNED_SWIPE, false);
+
         setHasOptionsMenu(true);
     }
 
@@ -97,8 +105,8 @@ public class ArticleDetailFragment extends Fragment implements LoaderManager.Loa
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         mRootView = inflater.inflate(R.layout.fragment_article_detail, container, false);
 
-        mDrawInsetsFrameLayout = (DrawInsetsFrameLayout) mRootView.findViewById(R.id.draw_insets_frame_layout);
-        mDrawInsetsFrameLayout.setOnInsetsCallback(new DrawInsetsFrameLayout.OnInsetsCallback() {
+        mDrawInsetsCoordinatorLayout = (DrawInsetsCoordinatorLayout) mRootView.findViewById(R.id.draw_insets_frame_layout);
+        mDrawInsetsCoordinatorLayout.setOnInsetsCallback(new DrawInsetsCoordinatorLayout.OnInsetsCallback() {
             @Override
             public void onInsetsChanged(Rect insets) { mTopInset = insets.top; }
         });
@@ -120,7 +128,8 @@ public class ArticleDetailFragment extends Fragment implements LoaderManager.Loa
 
         mStatusBarColorDrawable = new ColorDrawable(0);
 
-        mRootView.findViewById(R.id.share_fab).setOnClickListener(new View.OnClickListener() {
+        mFab = (FloatingActionButton) mRootView.findViewById(R.id.share_fab);
+        mFab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 startActivity(Intent.createChooser(ShareCompat.IntentBuilder.from(getActivity())
@@ -129,6 +138,10 @@ public class ArticleDetailFragment extends Fragment implements LoaderManager.Loa
                     .getIntent(), getString(R.string.action_share)));
             }
         });
+
+        if (!hasLearnedSwipe) {
+            Snackbar.make(mDrawInsetsCoordinatorLayout, "Swipe left/right for additional articles", Snackbar.LENGTH_LONG).show();
+        }
 
         bindViews();
         updateStatusBar();
@@ -152,7 +165,7 @@ public class ArticleDetailFragment extends Fragment implements LoaderManager.Loa
         }
 
         mStatusBarColorDrawable.setColor(color);
-        mDrawInsetsFrameLayout.setInsetBackground(mStatusBarColorDrawable);
+        mDrawInsetsCoordinatorLayout.setInsetBackground(mStatusBarColorDrawable);
     }
 
     static float progress(float v, float min, float max) { return constrain((v - min) / (max - min), 0, 1); }
@@ -172,7 +185,6 @@ public class ArticleDetailFragment extends Fragment implements LoaderManager.Loa
         TextView bylineView = (TextView) mRootView.findViewById(R.id.article_byline);
         bylineView.setMovementMethod(new LinkMovementMethod());
         TextView bodyView = (TextView) mRootView.findViewById(R.id.article_body);
-        //bodyView.setTypeface(Typeface.createFromAsset(getResources().getAssets(), "Rosario-Regular.ttf"));
 
         if (mCursor != null) {
             mRootView.setAlpha(0);
