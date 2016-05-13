@@ -10,14 +10,12 @@ import android.database.Cursor;
 import android.os.Bundle;
 import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.CollapsingToolbarLayout;
-import android.support.v4.content.ContextCompat;
 import android.support.v4.content.res.ResourcesCompat;
 import android.support.v4.view.ViewCompat;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.ActionBarActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.support.v7.widget.StaggeredGridLayoutManager;
 import android.support.v7.widget.Toolbar;
 import android.text.format.DateUtils;
 import android.util.Log;
@@ -42,6 +40,7 @@ public class ArticleListActivity extends ActionBarActivity implements LoaderMana
     private Toolbar mToolbar;
     private SwipeRefreshLayout mSwipeRefreshLayout;
     private RecyclerView mRecyclerView;
+    private int hold;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -56,7 +55,7 @@ public class ArticleListActivity extends ActionBarActivity implements LoaderMana
         mAppBarLayout.addOnOffsetChangedListener(new AppBarLayout.OnOffsetChangedListener() {
             @Override
             public void onOffsetChanged(AppBarLayout appBarLayout, int verticalOffset) {
-                if (mCollapsingToolbarLayout.getHeight() + verticalOffset < 2 * ViewCompat.getMinimumHeight(mCollapsingToolbarLayout)) {
+                if (mCollapsingToolbarLayout.getHeight() + verticalOffset < 2 * ViewCompat.getMinimumHeight(mToolbar)) {
                     mSwipeRefreshLayout.setEnabled(false);
                 } else {
                     mSwipeRefreshLayout.setEnabled(true);
@@ -67,6 +66,23 @@ public class ArticleListActivity extends ActionBarActivity implements LoaderMana
         mRecyclerView = (RecyclerView) findViewById(R.id.recycler_view);
         DividerItemDecoration itemDecoration = new DividerItemDecoration(this, ResourcesCompat.getDrawable(getResources(), R.drawable.padded_divider, null), DividerItemDecoration.VERTICAL_LIST);
         mRecyclerView.addItemDecoration(itemDecoration);
+        mRecyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
+            @Override
+            public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
+                super.onScrolled(recyclerView, dx, dy);
+                int max = mAppBarLayout.getHeight();
+
+                hold += dy;
+//                Log.w("SCROLL", String.valueOf(hold));
+                if (dy > 0 && hold <= ViewCompat.getMinimumHeight(mToolbar)) {
+                    // scrolling up
+                    mAppBarLayout.setTranslationY(Math.max(-max, mAppBarLayout.getTranslationY() - dy));
+                } else if (hold <= ViewCompat.getMinimumHeight(mToolbar)){
+                    // scrolling down
+                    mAppBarLayout.setTranslationY(Math.min(0, mAppBarLayout.getTranslationY() - dy));
+                }
+            }
+        });
 
         getLoaderManager().initLoader(0, null, this);
 

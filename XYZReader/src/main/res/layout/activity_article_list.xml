@@ -18,8 +18,7 @@
             android:layout_height="112dp"
             android:fitsSystemWindows="true"
             app:expandedTitleMarginEnd="64dp"
-            app:expandedTitleMarginStart="48dp"
-            app:layout_scrollFlags="scroll|exitUntilCollapsed" >
+            app:expandedTitleMarginStart="48dp">
 
             <android.support.v7.widget.Toolbar
                 android:id="@+id/toolbar"
@@ -28,8 +27,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="?actionBarSize"
                 android:minHeight="?actionBarSize"
-                android:layout_gravity="bottom"
-                app:layout_scrollFlags="scroll|enterAlways" />
+                android:layout_gravity="bottom" />
 
             <ImageView
                 android:layout_width="wrap_content"
@@ -44,7 +42,7 @@
     <android.support.v4.widget.SwipeRefreshLayout
         android:id="@+id/swipe_refresh_layout"
         android:layout_width="match_parent"
-        android:layout_height="match_parent" >
+        android:layout_height="wrap_content" >
 
         <android.support.v7.widget.RecyclerView
             android:id="@+id/recycler_view"
@@ -55,7 +53,6 @@
             android:paddingTop="116dp"
             android:paddingLeft="@dimen/list_side_margin"
             android:paddingRight="@dimen/list_side_margin"
-            android:paddingBottom="28dp"
             android:nestedScrollingEnabled="true"
             app:layout_behavior="@string/appbar_scrolling_view_behavior" />
     </android.support.v4.widget.SwipeRefreshLayout>
