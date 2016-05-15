@@ -14,4 +14,11 @@
         <item name="android:colorAccent">@color/theme_accent</item>
         <item name="android:statusBarColor">@android:color/transparent</item>
     </style>
+
+    <style name="Theme.Bacon.FAB">
+        <item name="android:backgroundTint">@color/theme_accent</item>
+        <item name="android:layout_marginEnd">@dimen/fab_margin</item>
+        <item name="android:layout_marginBottom">@dimen/fab_margin</item>
+        <item name="android:elevation">@dimen/fab_elevation</item>
+    </style>
 </resources>

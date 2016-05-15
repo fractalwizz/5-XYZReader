@@ -7,6 +7,7 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.Loader;
 import android.database.Cursor;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.CollapsingToolbarLayout;
@@ -40,7 +41,7 @@ public class ArticleListActivity extends ActionBarActivity implements LoaderMana
     private Toolbar mToolbar;
     private SwipeRefreshLayout mSwipeRefreshLayout;
     private RecyclerView mRecyclerView;
-    private int hold;
+    private int hold = 0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -49,13 +50,26 @@ public class ArticleListActivity extends ActionBarActivity implements LoaderMana
         mToolbar = (Toolbar) findViewById(R.id.toolbar);
 
         mAppBarLayout = (AppBarLayout) findViewById(R.id.toolbar_container);
+
         mCollapsingToolbarLayout = (CollapsingToolbarLayout) findViewById(R.id.collapse_toolbar);
+
         mSwipeRefreshLayout = (SwipeRefreshLayout) findViewById(R.id.swipe_refresh_layout);
+        mSwipeRefreshLayout.setProgressViewOffset(false, 2 * ViewCompat.getMinimumHeight(mToolbar) - 100, 2 * ViewCompat.getMinimumHeight(mToolbar) + 200);
+
+        mSwipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                if (mRecyclerView.getChildCount() > 0) {
+                    mIsRefreshing = false;
+                    updateRefreshingUI();
+                }
+            }
+        });
 
         mAppBarLayout.addOnOffsetChangedListener(new AppBarLayout.OnOffsetChangedListener() {
             @Override
             public void onOffsetChanged(AppBarLayout appBarLayout, int verticalOffset) {
-                if (mCollapsingToolbarLayout.getHeight() + verticalOffset < 2 * ViewCompat.getMinimumHeight(mToolbar)) {
+                if (appBarLayout.getHeight() + verticalOffset < 2 * ViewCompat.getMinimumHeight(mToolbar)) {
                     mSwipeRefreshLayout.setEnabled(false);
                 } else {
                     mSwipeRefreshLayout.setEnabled(true);
@@ -72,8 +86,15 @@ public class ArticleListActivity extends ActionBarActivity implements LoaderMana
                 super.onScrolled(recyclerView, dx, dy);
                 int max = mAppBarLayout.getHeight();
 
-                hold += dy;
-//                Log.w("SCROLL", String.valueOf(hold));
+                hold = mRecyclerView.computeVerticalScrollOffset();
+                Log.w("SCROLL", String.valueOf(hold));
+
+                if (hold <= ViewCompat.getMinimumHeight(mToolbar)) {
+                    mAppBarLayout.setElevation(0);
+                } else {
+                    mAppBarLayout.setElevation(mAppBarLayout.getTargetElevation());
+                }
+
                 if (dy > 0 && hold <= ViewCompat.getMinimumHeight(mToolbar)) {
                     // scrolling up
                     mAppBarLayout.setTranslationY(Math.max(-max, mAppBarLayout.getTranslationY() - dy));
