@@ -33,7 +33,7 @@
             android:paddingTop="@dimen/list_item_margin"
             android:paddingRight="@dimen/list_item_margin"
             android:paddingBottom="4dp"
-            android:textColor="@color/ltgray"
+            android:textColor="@color/text_body_color"
             android:ellipsize="end"
             android:maxLines="2" />
 

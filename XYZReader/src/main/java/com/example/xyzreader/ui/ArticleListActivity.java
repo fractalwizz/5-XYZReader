@@ -55,10 +55,10 @@ public class ArticleListActivity extends ActionBarActivity implements LoaderMana
 
         mSwipeRefreshLayout = (SwipeRefreshLayout) findViewById(R.id.swipe_refresh_layout);
         mSwipeRefreshLayout.setProgressViewOffset(false, 2 * ViewCompat.getMinimumHeight(mToolbar) - 100, 2 * ViewCompat.getMinimumHeight(mToolbar) + 200);
-
         mSwipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
+                // do actual refresh
                 if (mRecyclerView.getChildCount() > 0) {
                     mIsRefreshing = false;
                     updateRefreshingUI();
@@ -87,7 +87,7 @@ public class ArticleListActivity extends ActionBarActivity implements LoaderMana
                 int max = mAppBarLayout.getHeight();
 
                 hold = mRecyclerView.computeVerticalScrollOffset();
-                Log.w("SCROLL", String.valueOf(hold));
+//                Log.w("SCROLL", String.valueOf(hold));
 
                 if (hold <= ViewCompat.getMinimumHeight(mToolbar)) {
                     mAppBarLayout.setElevation(0);

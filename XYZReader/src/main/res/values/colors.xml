@@ -9,5 +9,5 @@
     <!--<color name="theme_primary">#8E24AA</color>-->
     <!--<color name="theme_primary_dark">#7B1FA2</color>-->
     <!--<color name="theme_accent">#E64A19</color>-->
-    <color name="ltgray">#ffe0e0e0</color>
+    <color name="text_body_color">#FF000000</color>
 </resources>

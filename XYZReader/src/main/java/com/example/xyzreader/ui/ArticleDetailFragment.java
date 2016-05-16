@@ -15,7 +15,10 @@ import android.preference.PreferenceManager;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.ShareCompat;
+import android.support.v4.view.ViewCompat;
+import android.support.v7.app.ActionBarActivity;
 import android.support.v7.graphics.Palette;
+import android.support.v7.widget.Toolbar;
 import android.text.Html;
 import android.text.format.DateUtils;
 import android.text.method.LinkMovementMethod;
@@ -50,9 +53,9 @@ public class ArticleDetailFragment extends Fragment implements LoaderManager.Loa
     private DrawInsetsCoordinatorLayout mDrawInsetsCoordinatorLayout;
     private ColorDrawable mStatusBarColorDrawable;
     private FloatingActionButton mFab;
+    private Toolbar mToolbar;
 
     private int mTopInset;
-    private View mPhotoContainerView;
     private ImageView mPhotoView;
     private int mScrollY;
     private boolean mIsCard = false;
@@ -111,20 +114,24 @@ public class ArticleDetailFragment extends Fragment implements LoaderManager.Loa
             public void onInsetsChanged(Rect insets) { mTopInset = insets.top; }
         });
 
+        mToolbar = (Toolbar) mRootView.findViewById(R.id.detailToolbar);
+        mToolbar.setTitle("");
+        getActivityCast().setSupportActionBar(mToolbar);
+        if (getActivityCast().getSupportActionBar() != null) {
+            getActivityCast().getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        }
+
         mScrollView = (ObservableScrollView) mRootView.findViewById(R.id.scrollview);
         mScrollView.setCallbacks(new ObservableScrollView.Callbacks() {
             @Override
             public void onScrollChanged() {
                 mScrollY = mScrollView.getScrollY();
-                getActivityCast().onUpButtonFloorChanged(mItemId, ArticleDetailFragment.this);
-                mPhotoContainerView.setTranslationY((int) (mScrollY - mScrollY / PARALLAX_FACTOR));
 
                 updateStatusBar();
             }
         });
 
         mPhotoView = (ImageView) mRootView.findViewById(R.id.photo);
-        mPhotoContainerView = mRootView.findViewById(R.id.photo_container);
 
         mStatusBarColorDrawable = new ColorDrawable(0);
 
@@ -262,14 +269,5 @@ public class ArticleDetailFragment extends Fragment implements LoaderManager.Loa
     public void onLoaderReset(Loader<Cursor> cursorLoader) {
         mCursor = null;
         bindViews();
-    }
-
-    public int getUpButtonFloor() {
-        if (mPhotoContainerView == null || mPhotoView.getHeight() == 0) { return Integer.MAX_VALUE; }
-
-        // account for parallax
-        return mIsCard
-            ? (int) mPhotoContainerView.getTranslationY() + mPhotoView.getHeight() - mScrollY
-            : mPhotoView.getHeight() - mScrollY;
     }
 }
