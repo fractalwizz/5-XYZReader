@@ -17,7 +17,8 @@
         android:id="@+id/thumbnail"
         android:layout_width="100dp"
         android:layout_height="100dp"
-        android:background="@color/photo_placeholder" />
+        android:background="@color/photo_placeholder"
+        android:transitionName="@string/detail_image_transition" />
 
     <LinearLayout
         android:layout_width="wrap_content"

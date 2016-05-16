@@ -3,13 +3,14 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical" >
+    android:orientation="vertical"
+    android:windowContentTransitions="true" >
 
     <android.support.design.widget.AppBarLayout
         android:id="@+id/toolbar_container"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        app:theme="@style/Theme.Bacon.Toolbar"
+        style="@style/Theme.Bacon.Toolbar"
         android:clipToPadding="false"
         app:elevation="@dimen/appBarElevation" >
 

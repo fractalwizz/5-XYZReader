@@ -7,4 +7,6 @@
     <string name="action_share">Share</string>
 
     <string name="up">Up</string>
+
+    <string name="detail_image_transition">TN_Detail_Image</string>
 </resources>

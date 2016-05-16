@@ -15,8 +15,7 @@ import android.preference.PreferenceManager;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.ShareCompat;
-import android.support.v4.view.ViewCompat;
-import android.support.v7.app.ActionBarActivity;
+import android.support.v7.app.AppCompatActivity;
 import android.support.v7.graphics.Palette;
 import android.support.v7.widget.Toolbar;
 import android.text.Html;
@@ -150,7 +149,7 @@ public class ArticleDetailFragment extends Fragment implements LoaderManager.Loa
             Snackbar.make(mDrawInsetsCoordinatorLayout, "Swipe left/right for additional articles", Snackbar.LENGTH_LONG).show();
         }
 
-        bindViews();
+        //bindViews();
         updateStatusBar();
 
         return mRootView;
@@ -261,6 +260,9 @@ public class ArticleDetailFragment extends Fragment implements LoaderManager.Loa
             mCursor.close();
             mCursor = null;
         }
+
+        AppCompatActivity activity = (AppCompatActivity) getActivity();
+        activity.supportStartPostponedEnterTransition();
 
         bindViews();
     }

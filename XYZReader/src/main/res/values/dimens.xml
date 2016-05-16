@@ -3,6 +3,7 @@
     <dimen name="appBarElevation">8dp</dimen>
     <dimen name="appBarSize">112dp</dimen>
     <dimen name="appBarLarge">224dp</dimen>
+    <dimen name="appBarMedium">145dp</dimen>
 
     <!-- detail -->
     <dimen name="detail_title_text_size">32sp</dimen>

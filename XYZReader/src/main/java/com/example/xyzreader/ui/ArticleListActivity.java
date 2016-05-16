@@ -7,14 +7,15 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.Loader;
 import android.database.Cursor;
-import android.os.Build;
 import android.os.Bundle;
 import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.CollapsingToolbarLayout;
+import android.support.v4.app.ActivityOptionsCompat;
 import android.support.v4.content.res.ResourcesCompat;
+import android.support.v4.util.Pair;
 import android.support.v4.view.ViewCompat;
 import android.support.v4.widget.SwipeRefreshLayout;
-import android.support.v7.app.ActionBarActivity;
+import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
@@ -35,13 +36,14 @@ import com.example.xyzreader.data.UpdaterService;
  * touched, lead to a {@link ArticleDetailActivity} representing item details. On tablets, the
  * activity presents a grid of items as cards.
  */
-public class ArticleListActivity extends ActionBarActivity implements LoaderManager.LoaderCallbacks<Cursor> {
+public class ArticleListActivity extends AppCompatActivity implements LoaderManager.LoaderCallbacks<Cursor> {
     private AppBarLayout mAppBarLayout;
     private CollapsingToolbarLayout mCollapsingToolbarLayout;
     private Toolbar mToolbar;
     private SwipeRefreshLayout mSwipeRefreshLayout;
     private RecyclerView mRecyclerView;
     private int hold = 0;
+    private ArticleListActivity activity = this;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -87,7 +89,6 @@ public class ArticleListActivity extends ActionBarActivity implements LoaderMana
                 int max = mAppBarLayout.getHeight();
 
                 hold = mRecyclerView.computeVerticalScrollOffset();
-//                Log.w("SCROLL", String.valueOf(hold));
 
                 if (hold <= ViewCompat.getMinimumHeight(mToolbar)) {
                     mAppBarLayout.setElevation(0);
@@ -143,7 +144,7 @@ public class ArticleListActivity extends ActionBarActivity implements LoaderMana
 
     @Override
     public void onLoadFinished(Loader<Cursor> cursorLoader, Cursor cursor) {
-        Adapter adapter = new Adapter(cursor);
+        Adapter adapter = new Adapter(cursor, activity);
         adapter.setHasStableIds(true);
         mRecyclerView.setAdapter(adapter);
         mRecyclerView.setLayoutManager(new LinearLayoutManager(this));
@@ -152,10 +153,14 @@ public class ArticleListActivity extends ActionBarActivity implements LoaderMana
     @Override
     public void onLoaderReset(Loader<Cursor> loader) { mRecyclerView.setAdapter(null); }
 
-    private class Adapter extends RecyclerView.Adapter<ViewHolder> {
+    class Adapter extends RecyclerView.Adapter<ViewHolder> {
         private Cursor mCursor;
+        private ArticleListActivity mActivity;
 
-        public Adapter(Cursor cursor) { mCursor = cursor; }
+        public Adapter(Cursor cursor, ArticleListActivity activity) {
+            mCursor = cursor;
+            mActivity = activity;
+        }
 
         @Override
         public long getItemId(int position) {
@@ -164,14 +169,16 @@ public class ArticleListActivity extends ActionBarActivity implements LoaderMana
         }
 
         @Override
-        public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+        public ViewHolder onCreateViewHolder(final ViewGroup parent, int viewType) {
             View view = getLayoutInflater().inflate(R.layout.list_item_article, parent, false);
             final ViewHolder vh = new ViewHolder(view);
 
             view.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    startActivity(new Intent(Intent.ACTION_VIEW, ItemsContract.Items.buildItemUri(getItemId(vh.getAdapterPosition()))));
+                    Intent intent = new Intent(Intent.ACTION_VIEW, ItemsContract.Items.buildItemUri(getItemId(vh.getAdapterPosition())));
+                    ActivityOptionsCompat activityOptions = ActivityOptionsCompat.makeSceneTransitionAnimation(mActivity, new Pair<View, String>(vh.thumbnailView, vh.thumbnailView.getTransitionName()));
+                    startActivity(intent, activityOptions.toBundle());
                 }
             });
 
