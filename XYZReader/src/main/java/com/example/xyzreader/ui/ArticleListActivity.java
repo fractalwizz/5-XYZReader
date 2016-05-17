@@ -23,6 +23,7 @@ import android.text.format.DateUtils;
 import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.FrameLayout;
 import android.widget.TextView;
 
 import com.example.xyzreader.R;
@@ -42,13 +43,19 @@ public class ArticleListActivity extends AppCompatActivity implements LoaderMana
     private Toolbar mToolbar;
     private SwipeRefreshLayout mSwipeRefreshLayout;
     private RecyclerView mRecyclerView;
+    private FrameLayout mFrameLayout;
     private int hold = 0;
+    private boolean mLandscape = false;
     private ArticleListActivity activity = this;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_article_list);
+
+        mFrameLayout = (FrameLayout) findViewById(R.id.landscape_frame);
+        if (mFrameLayout != null) { mLandscape = true; }
+
         mToolbar = (Toolbar) findViewById(R.id.toolbar);
 
         mAppBarLayout = (AppBarLayout) findViewById(R.id.toolbar_container);
@@ -88,10 +95,14 @@ public class ArticleListActivity extends AppCompatActivity implements LoaderMana
                 super.onScrolled(recyclerView, dx, dy);
                 int max = mAppBarLayout.getHeight();
 
+                int elev = (mLandscape)
+                    ? 3
+                    : 0;
+
                 hold = mRecyclerView.computeVerticalScrollOffset();
 
                 if (hold <= ViewCompat.getMinimumHeight(mToolbar)) {
-                    mAppBarLayout.setElevation(0);
+                    mAppBarLayout.setElevation(elev);
                 } else {
                     mAppBarLayout.setElevation(mAppBarLayout.getTargetElevation());
                 }
@@ -203,6 +214,7 @@ public class ArticleListActivity extends AppCompatActivity implements LoaderMana
                 mCursor.getString(ArticleLoader.Query.THUMB_URL),
                 ImageLoaderHelper.getInstance(ArticleListActivity.this).getImageLoader());
             holder.thumbnailView.setAspectRatio(mCursor.getFloat(ArticleLoader.Query.ASPECT_RATIO));
+            holder.thumbnailView.setContentDescription(holder.titleView.getText());
         }
 
         @Override

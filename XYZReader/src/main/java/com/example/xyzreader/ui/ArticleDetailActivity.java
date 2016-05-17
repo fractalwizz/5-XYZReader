@@ -33,10 +33,6 @@ public class ArticleDetailActivity extends AppCompatActivity implements LoaderMa
     private Cursor mCursor;
     private long mStartId;
     public static final String PREF_USER_LEARNED_SWIPE = "swipe_learned";
-
-    private long mSelectedItemId;
-    private int mSelectedItemUpButtonFloor = Integer.MAX_VALUE;
-    private int mTopInset;
     private int swipeYet = 1;
 
     private ViewPager mPager;
@@ -97,8 +93,6 @@ public class ArticleDetailActivity extends AppCompatActivity implements LoaderMa
             @Override
             public void onPageSelected(int position) {
                 if (mCursor != null) { mCursor.moveToPosition(position); }
-                mSelectedItemId = mCursor.getLong(ArticleLoader.Query._ID);
-//                Log.w("Detail", "Is this swipe?:" + String.valueOf(swipeYet));
 
                 SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
 
@@ -113,7 +107,6 @@ public class ArticleDetailActivity extends AppCompatActivity implements LoaderMa
         if (savedInstanceState == null) {
             if (getIntent() != null && getIntent().getData() != null) {
                 mStartId = ItemsContract.Items.getItemId(getIntent().getData());
-                mSelectedItemId = mStartId;
             }
         }
 

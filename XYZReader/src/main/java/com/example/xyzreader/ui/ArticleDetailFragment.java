@@ -40,9 +40,7 @@ import com.example.xyzreader.data.ArticleLoader;
  */
 public class ArticleDetailFragment extends Fragment implements LoaderManager.LoaderCallbacks<Cursor> {
     private static final String TAG = "ArticleDetailFragment";
-
     public static final String ARG_ITEM_ID = "item_id";
-    private static final float PARALLAX_FACTOR = 1.25f;
 
     private Cursor mCursor;
     private long mItemId;
@@ -57,7 +55,6 @@ public class ArticleDetailFragment extends Fragment implements LoaderManager.Loa
     private int mTopInset;
     private ImageView mPhotoView;
     private int mScrollY;
-    private boolean mIsCard = false;
     private boolean hasLearnedSwipe;
     private int mStatusBarFullOpacityBottom;
 
@@ -81,7 +78,6 @@ public class ArticleDetailFragment extends Fragment implements LoaderManager.Loa
         super.onCreate(savedInstanceState);
         if (getArguments().containsKey(ARG_ITEM_ID)) { mItemId = getArguments().getLong(ARG_ITEM_ID); }
 
-        mIsCard = getResources().getBoolean(R.bool.detail_is_card);
         mStatusBarFullOpacityBottom = getResources().getDimensionPixelSize(R.dimen.detail_card_top_margin);
 
         SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(getActivity());
@@ -232,6 +228,8 @@ public class ArticleDetailFragment extends Fragment implements LoaderManager.Loa
                     @Override
                     public void onErrorResponse(VolleyError volleyError) {}
                 });
+
+            mPhotoView.setContentDescription(titleView.getText());
         } else {
             mRootView.setVisibility(View.GONE);
 

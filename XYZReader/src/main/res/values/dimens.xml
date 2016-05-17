@@ -4,6 +4,8 @@
     <dimen name="appBarSize">112dp</dimen>
     <dimen name="appBarLarge">224dp</dimen>
     <dimen name="appBarMedium">145dp</dimen>
+    <dimen name="landscape_article_list_width">420dp</dimen>
+    <dimen name="landscape_toolbar_height">56dp</dimen>
 
     <!-- detail -->
     <dimen name="detail_title_text_size">32sp</dimen>

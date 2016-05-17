@@ -1,0 +1,72 @@
+<android.support.design.widget.CoordinatorLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:windowContentTransitions="true" >
+
+    <android.support.design.widget.AppBarLayout
+        android:id="@+id/toolbar_container"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        style="@style/Theme.Bacon.Toolbar"
+        android:clipToPadding="false"
+        app:elevation="@dimen/appBarElevation" >
+
+        <android.support.design.widget.CollapsingToolbarLayout
+            android:id="@+id/collapse_toolbar"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/appBarSize"
+            android:fitsSystemWindows="true"
+            android:elevation="0dp"
+            app:expandedTitleMarginEnd="64dp"
+            app:expandedTitleMarginStart="48dp">
+
+            <android.support.v7.widget.Toolbar
+                android:id="@+id/toolbar"
+                android:layout_marginLeft="@dimen/list_toolbar_side_margin"
+                android:layout_marginRight="@dimen/list_toolbar_side_margin"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/landscape_toolbar_height"
+                android:minHeight="@dimen/landscape_toolbar_height"
+                android:layout_gravity="bottom" />
+
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@drawable/logo_black"
+                android:contentDescription="@string/app_name"
+                android:adjustViewBounds="false"
+                android:paddingStart="16dp"
+                android:layout_gravity="bottom" />
+        </android.support.design.widget.CollapsingToolbarLayout>
+    </android.support.design.widget.AppBarLayout>
+    <FrameLayout
+        android:id="@+id/landscape_frame"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/light_grey" >
+
+        <android.support.v4.widget.SwipeRefreshLayout
+            android:id="@+id/swipe_refresh_layout"
+            android:layout_width="@dimen/landscape_article_list_width"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:background="@android:color/white"
+            android:elevation="3dp" >
+
+            <android.support.v7.widget.RecyclerView
+                android:id="@+id/recycler_view"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:clipToPadding="false"
+                android:scrollbarStyle="outsideOverlay"
+                android:paddingTop="116dp"
+                android:paddingLeft="@dimen/list_side_margin"
+                android:paddingRight="@dimen/list_side_margin"
+                android:nestedScrollingEnabled="true"
+                app:layout_behavior="@string/appbar_scrolling_view_behavior" />
+        </android.support.v4.widget.SwipeRefreshLayout>
+    </FrameLayout>
+</android.support.design.widget.CoordinatorLayout>
