@@ -23,6 +23,7 @@ import android.text.format.DateUtils;
 import android.text.method.LinkMovementMethod;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
@@ -131,6 +132,14 @@ public class ArticleDetailFragment extends Fragment implements LoaderManager.Loa
         mStatusBarColorDrawable = new ColorDrawable(0);
 
         mFab = (FloatingActionButton) mRootView.findViewById(R.id.share_fab);
+        mFab.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+                mFab.setElevation(12);
+                return false;
+            }
+        });
+
         mFab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
